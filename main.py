@@ -19,7 +19,8 @@ def display_image(img, dimensions: tuple):
     for y in range(dimensions[1]):
         for x in range(dimensions[0]):
             print(f"\033[48;2;{pixel_array[y, x][0]};{pixel_array[y, x][1]};{pixel_array[y, x][2]}m{CHAR}{RESET}", end="")
-        print()
+        if y != dimensions[1] - 1:
+            print()
     return
 
 def main() -> int:
