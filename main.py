@@ -9,6 +9,30 @@ from posix import terminal_size
 RESET: str = "\033[0m"
 CHAR: str = " "
 
+def get_avg_rgb(original_array, coord: tuple[int, int], ratio: tuple[float, float]) -> tuple[int, int, int]:
+    red = 0
+    green = 0
+    blue = 0
+    nb_pixels = 0
+    for x_ratio in range(int(ratio[1])):
+        for y_ratio in range(int(ratio[0])):
+            nb_pixels += 1
+            red += int(original_array[coord[1] * int(ratio[1]) + x_ratio, coord[0] * int(ratio[0]) + y_ratio][0])
+            green += int(original_array[coord[1] * int(ratio[1]) + x_ratio, coord[0] * int(ratio[0]) + y_ratio][1])
+            blue += int(original_array[coord[1] * int(ratio[1]) + x_ratio, coord[0] * int(ratio[0]) + y_ratio][2])
+    return (red // nb_pixels, green // nb_pixels, blue // nb_pixels)
+
+def resize_image(img, screen_dimensions: tuple[int, int]):
+    np_array = numpy.array(img)
+    original_size = numpy.shape(np_array)
+    rgb_array = numpy.zeros((screen_dimensions[1], screen_dimensions[0], 3), dtype=numpy.uint8)
+    ratio = (original_size[1] / screen_dimensions[0], original_size[0] / screen_dimensions[1])
+    for x in range(screen_dimensions[0]):
+        for y in range(screen_dimensions[1]):
+            rgb_array[y, x] = get_avg_rgb(np_array, (x, y), ratio)
+    resized = Image.fromarray(rgb_array)
+    return resized
+
 class Screen():
     def __init__(self):
         self.refresh_dimensions()
@@ -28,9 +52,11 @@ class Screen():
 
     def display_image(self, img) -> None:
         self.refresh_dimensions()
-        resized = img.resize(self.get_dimensions())
-        if resized.mode not in ('RGBA', 'RGB'):
-            resized = resized.convert('RGB')
+        if img.mode not in ('RGBA', 'RGB'):
+            img = img.convert('RGB')
+        if self.columns == 0 or self.lines == 0:
+            return
+        resized = resize_image(img, self.get_dimensions())
         pixel_array = numpy.array(resized)
         for y in range(self.lines):
             for x in range(self.columns):
