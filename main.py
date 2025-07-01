@@ -8,6 +8,7 @@ from posix import terminal_size
 
 RESET: str = "\033[0m"
 CHAR: str = " "
+CHAR_RATIO = 2.25 / 1
 
 def get_avg_rgb(original_array, coord: tuple[int, int], ratio: tuple[float, float]) -> tuple[int, int, int]:
     red = 0
@@ -20,13 +21,23 @@ def get_avg_rgb(original_array, coord: tuple[int, int], ratio: tuple[float, floa
             red += int(original_array[coord[1] * int(ratio[1]) + x_ratio, coord[0] * int(ratio[0]) + y_ratio][0])
             green += int(original_array[coord[1] * int(ratio[1]) + x_ratio, coord[0] * int(ratio[0]) + y_ratio][1])
             blue += int(original_array[coord[1] * int(ratio[1]) + x_ratio, coord[0] * int(ratio[0]) + y_ratio][2])
+    if nb_pixels == 0:
+        return (0, 0, 0)
     return (red // nb_pixels, green // nb_pixels, blue // nb_pixels)
 
 def resize_image(img, screen_dimensions: tuple[int, int]):
     np_array = numpy.array(img)
-    original_size = numpy.shape(np_array)
+    original_size = img.size
     rgb_array = numpy.zeros((screen_dimensions[1], screen_dimensions[0], 3), dtype=numpy.uint8)
-    ratio = (original_size[1] / screen_dimensions[0], original_size[0] / screen_dimensions[1])
+    img_ratio = original_size[0] / original_size[1]
+    if img_ratio > (screen_dimensions[0] / screen_dimensions[1]) * CHAR_RATIO:
+        print("First")
+        screen_dimensions = (screen_dimensions[0], int(screen_dimensions[0] / (img_ratio / CHAR_RATIO)))
+    else:
+        print("Second")
+        screen_dimensions = (int(screen_dimensions[1] * img_ratio * CHAR_RATIO), screen_dimensions[1])
+    print(screen_dimensions)
+    ratio = (original_size[0] / screen_dimensions[0], original_size[1] / screen_dimensions[1])
     for x in range(screen_dimensions[0]):
         for y in range(screen_dimensions[1]):
             rgb_array[y, x] = get_avg_rgb(np_array, (x, y), ratio)
