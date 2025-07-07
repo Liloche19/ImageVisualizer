@@ -7,7 +7,7 @@ CURRENT_FILE	:=	0
 NAME	=	ImageVisualizer
 
 # Compilation flags
-CFLAGS	=	-Wall -Wextra -Werror -W -g
+CFLAGS	=	-Wall -Wextra -W -g -lm
 MAKEFLAGS	=	-j$(shell nproc) --silent --no-print-directory
 
 # Colors

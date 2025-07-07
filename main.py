@@ -28,7 +28,6 @@ def get_avg_rgb(original_array, coord: tuple[int, int], ratio: tuple[float, floa
 def resize_image(img, screen_dimensions: tuple[int, int]):
     np_array = numpy.array(img)
     original_size = img.size
-    rgb_array = numpy.zeros((screen_dimensions[1], screen_dimensions[0], 3), dtype=numpy.uint8)
     img_ratio = original_size[0] / original_size[1]
     if img_ratio > (screen_dimensions[0] / screen_dimensions[1]) * CHAR_RATIO:
         print("First")
@@ -36,6 +35,7 @@ def resize_image(img, screen_dimensions: tuple[int, int]):
     else:
         print("Second")
         screen_dimensions = (int(screen_dimensions[1] * img_ratio * CHAR_RATIO), screen_dimensions[1])
+    rgb_array = numpy.zeros((screen_dimensions[1], screen_dimensions[0], 3), dtype=numpy.uint8)
     print(screen_dimensions)
     ratio = (original_size[0] / screen_dimensions[0], original_size[1] / screen_dimensions[1])
     for x in range(screen_dimensions[0]):
@@ -69,10 +69,10 @@ class Screen():
             return
         resized = resize_image(img, self.get_dimensions())
         pixel_array = numpy.array(resized)
-        for y in range(self.lines):
-            for x in range(self.columns):
-                print(f"\033[48;2;{pixel_array[y, x][0]};{pixel_array[y, x][1]};{pixel_array[y, x][2]}m{CHAR}{RESET}", end="")
-            if y != self.lines - 1:
+        for x in range(self.lines):
+            for y in range(self.columns):
+                print(f"\033[48;2;{pixel_array[x, y][0]};{pixel_array[x, y][1]};{pixel_array[x, y][2]}m{CHAR}{RESET}", end="")
+            if x != self.lines - 1:
                 print()
         return
 

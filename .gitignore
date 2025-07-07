@@ -1,7 +1,7 @@
 # C files:
 *.o
 ImageVisualizer
-*.vgcore
+vgcore.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
