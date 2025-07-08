@@ -4,6 +4,7 @@ SRC	=	src/main.c\
 		src/print.c\
 		src/thread.c\
 		src/terminal.c\
+		src/load_image.c\
 
 OBJ	=	$(SRC:.c=.o)
 N_FILES	:=	$(words $(SRC))
@@ -12,7 +13,7 @@ NAME	=	ImageVisualizer
 
 # Compilation flags
 COMPILER	=	gcc
-COMPILER_FLAGS	=	-Wall -Wextra -W -g -lm -lpthread
+COMPILER_FLAGS	=	-Wall -Wextra -W -g -lm -lpthread -lpng
 MAKEFLAGS	=	-j$(shell nproc) --silent --no-print-directory
 
 # Colors

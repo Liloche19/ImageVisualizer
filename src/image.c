@@ -101,13 +101,3 @@ unsigned char *resize_image(Image *image, Screen *screen)
             apply_color_at_coord(screen->resized, avg_rgb(image->pixels, ratio_x, ratio_y, x, y, image->width, image->height, image->channels), x, y, screen->cols);
     return screen->resized;
 }
-
-void load_image(char *filename, Image *settings)
-{
-    settings->pixels = stbi_load(filename, &settings->width, &settings->height, &settings->channels, 0);
-    if (settings->pixels == NULL) {
-        fprintf(stderr, "Can't open image!\n");
-        exit(1);
-    }
-    return;
-}

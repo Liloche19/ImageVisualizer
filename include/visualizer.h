@@ -9,8 +9,6 @@
     #include <time.h>
     #include <sys/ioctl.h>
 
-    #include "stb_image.h"
-
     #define RESET "\033[0m"
     #define CHAR ' '
     #define DEFAULT_CHAR_RATIO 2.29

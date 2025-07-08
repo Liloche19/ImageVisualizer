@@ -27,6 +27,6 @@ int main(int argc, char **argv)
     load_image(filename, &image);
     get_screen_informations(&screen);
     display_image(&image, &screen);
-    stbi_image_free(image.pixels);
+    free(image.pixels);
     return 0;
 }
