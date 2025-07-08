@@ -1,5 +1,8 @@
 # Source files
-SRC	=	src/main.c
+SRC	=	src/main.c\
+		src/image.c\
+		src/print.c\
+		src/terminal.c
 
 OBJ	=	$(SRC:.c=.o)
 N_FILES	:=	$(words $(SRC))
