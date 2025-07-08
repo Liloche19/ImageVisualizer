@@ -6,6 +6,7 @@
     #include <unistd.h>
     #include <string.h>
     #include <pthread.h>
+    #include <time.h>
     #include <sys/ioctl.h>
 
     #include "stb_image.h"
