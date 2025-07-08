@@ -10,7 +10,8 @@ CURRENT_FILE	:=	0
 NAME	=	ImageVisualizer
 
 # Compilation flags
-CFLAGS	=	-Wall -Wextra -W -g -lm
+COMPILER	=	gcc
+COMPILER_FLAGS	=	-Wall -Wextra -W -g -lm
 MAKEFLAGS	=	-j$(shell nproc) --silent --no-print-directory
 
 # Colors
@@ -38,7 +39,7 @@ $(NAME):
 	@echo ""
 	@echo -ne "[$(YELLOW)$(NAME)$(RESET)] "
 	@echo -ne "Compiling the main program...\n"
-	@gcc -o $(NAME) $(OBJ) $(CFLAGS)
+	@$(COMPILER) -o $(NAME) $(OBJ) $(COMPILER_FLAGS)
 	@echo ""
 	@echo -ne "[$(YELLOW)$(NAME)$(RESET)] "
 	@echo -ne "Main program successfully compiled !\n"
@@ -47,7 +48,7 @@ $(NAME):
 $(OBJ): %.o: %.c
 	@echo -ne "[$(BLUE)COMPILATION$(RESET)] "
 	@echo -ne "($(shell expr $(CURRENT_FILE) + 1)/$(N_FILES)) $@\r"
-	@gcc -c $< -o $@ $(CFLAGS)
+	@$(COMPILER) -c $< -o $@ $(COMPILER_FLAGS)
 	@$(eval CURRENT_FILE := $(shell expr $(CURRENT_FILE) + 1))
 
 # Rule to remove all object files
