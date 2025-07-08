@@ -18,14 +18,15 @@ void print_pixel(unsigned char r, unsigned char g, unsigned char b)
 
     asprintf(&pixel, "\033[48;2;%u;%u;%um%c%s", r, g, b, CHAR, RESET);
     if (pixel == NULL) {
-        perror("Malloc failed!\n");
+        fprintf(stderr, "Malloc failed!\n");
         exit(1);
     }
     write(1, pixel, strlen(pixel));
+    free(pixel);
     return;
 }
 
-int avg_rgb(unsigned char *img, float ratio_x, float ratio_y, int x, int y, int width, int height)
+int avg_rgb(unsigned char *img, float ratio_x, float ratio_y, int x, int y, int width, int height, int channels)
 {
     int rgb = 0;
     int r = 0;
@@ -33,11 +34,11 @@ int avg_rgb(unsigned char *img, float ratio_x, float ratio_y, int x, int y, int 
     int b = 0;
     int coord = 0;
     int nb_pixels = 0;
-    int coord_max = height * width * 3;
+    int coord_max = height * width * channels;
 
     for (int offset_x = 0; offset_x < ratio_x; offset_x++) {
         for (int offset_y = 0; offset_y < ratio_y; offset_y++) {
-            coord = (((int) (x * ratio_x) + offset_x) + ((int) (y * ratio_y) + offset_y) * width) * 3;
+            coord = (((int) (x * ratio_x) + offset_x) + ((int) (y * ratio_y) + offset_y) * width) * channels;
             if (coord + 2 >= coord_max || coord < 0)
                 break;
             nb_pixels++;
@@ -63,7 +64,7 @@ void apply_color_at_coord(unsigned char *image, int rgb, int x, int y, int width
     return;
 }
 
-unsigned char *resize_image(unsigned char *img, int *width, int *height, int *target_width, int *target_height, float char_ratio)
+unsigned char *resize_image(unsigned char *img, int *width, int *height, int *target_width, int *target_height, float char_ratio, int channels)
 {
     unsigned char *image = NULL;
     float img_ratio = 0;
@@ -71,28 +72,28 @@ unsigned char *resize_image(unsigned char *img, int *width, int *height, int *ta
     float ratio_y = 0.0;
 
     img_ratio = (float) *width / *height;
-    if (img_ratio > ((float) *target_width / *target_height) * char_ratio)
-        *target_height = *target_width / (img_ratio / char_ratio);
+    if (img_ratio > ((float) *target_width / *target_height) / char_ratio)
+        *target_height = *target_width / (img_ratio * char_ratio);
     else
         *target_width = *target_height * img_ratio * char_ratio;
     image = malloc(sizeof(unsigned char) * *target_width * *target_height * 3);
     if (image == NULL) {
-        perror("Malloc failed!\n");
+        fprintf(stderr, "Malloc failed!\n");
         exit(1);
     }
     ratio_x = (float) *width / *target_width;
     ratio_y = (float) *height / *target_height;
     for (int x = 0; x < *target_width; x++)
         for (int y = 0; y < *target_height; y++)
-            apply_color_at_coord(image, avg_rgb(img, ratio_x, ratio_y, x, y, *width, *height), x, y, *target_width);
+            apply_color_at_coord(image, avg_rgb(img, ratio_x, ratio_y, x, y, *width, *height, channels), x, y, *target_width);
     return image;
 }
 
-void display_image(unsigned char *img, int width, int height, int target_width, int target_height, float char_ratio)
+void display_image(unsigned char *img, int width, int height, int target_width, int target_height, float char_ratio, int channels)
 {
     int index = 0;
 
-    img = resize_image(img, &width, &height, &target_width, &target_height, char_ratio);
+    img = resize_image(img, &width, &height, &target_width, &target_height, char_ratio, channels);
     for (int i = 0; i < target_height; i++) {
         for (int j = 0; j < target_width; j++) {
             index = (i * target_width + j) * 3;
@@ -106,7 +107,7 @@ void display_image(unsigned char *img, int width, int height, int target_width, 
 
 int main(int argc, char **argv)
 {
-    float char_ratio = CHAR_RATIO;
+    float char_ratio = 0.0;
     char *image = NULL;
     unsigned char *img = NULL;
     int width, height, channels;
@@ -117,14 +118,19 @@ int main(int argc, char **argv)
     if (strcmp(argv[1], "-h") == 0)
         return help(argv[0], 0);
     image = argv[1];
-    if (image == NULL || char_ratio == 0)
+    if (image == NULL)
         return 0;
     img = stbi_load(image, &width, &height, &channels, 0);
-    if (img == NULL)
+    if (img == NULL) {
+        fprintf(stderr, "Can't open image!\n");
         return 1;
+    }
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    char_ratio = (float) w.ws_ypixel / w.ws_row / ((float) w.ws_xpixel / w.ws_col);
-    display_image(img, width, height, w.ws_col, w.ws_row, char_ratio);
+    if (w.ws_ypixel == 0 || w.ws_xpixel == 0)
+        char_ratio = DEFAULT_CHAR_RATIO;
+    else
+        char_ratio = (float) w.ws_ypixel / w.ws_row / ((float) w.ws_xpixel / w.ws_col);
+    display_image(img, width, height, w.ws_col, w.ws_row, char_ratio, channels);
     stbi_image_free(img);
     return 0;
 }

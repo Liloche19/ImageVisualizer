@@ -9,7 +9,7 @@
 
     #define RESET "\033[0m"
     #define CHAR ' '
-    #define CHAR_RATIO 2.29 / 1
+    #define DEFAULT_CHAR_RATIO 2.29
 
 typedef struct {
     unsigned char *pixels;
