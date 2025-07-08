@@ -5,6 +5,7 @@
     #include <stdio.h>
     #include <unistd.h>
     #include <string.h>
+    #include <pthread.h>
     #include <sys/ioctl.h>
 
     #include "stb_image.h"
@@ -24,6 +25,7 @@ typedef struct {
 typedef struct {
     int cols;
     int rows;
+    unsigned char *resized;
     float char_ratio;
 } Screen;
 
@@ -40,5 +42,17 @@ void load_image(char *filename, Image *settings);
 
 // Terminal functions
 void get_screen_informations(Screen *settings);
+
+// Threading functions
+long get_nb_threads(void);
+
+typedef struct {
+    Image *image;
+    Screen * screen;
+    int start_index;
+    int end_index;
+    float ratio_x;
+    float ratio_y;
+} ThreadData;
 
 #endif //_VISUALIZER_H_
