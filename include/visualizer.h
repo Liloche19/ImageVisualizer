@@ -7,6 +7,7 @@
     #include <string.h>
     #include <pthread.h>
     #include <time.h>
+    #include <stdbool.h>
     #include <sys/ioctl.h>
 
     #define RESET "\033[0m"
@@ -26,6 +27,7 @@ typedef struct {
     int rows;
     char *print_buffer;
     float char_ratio;
+    bool gpu_available;
 } Screen;
 
 typedef union rgb_u {
@@ -37,6 +39,7 @@ void apply_color_at_coord_on_buffer(Screen *screen, int x, int y, rgb_t color);
 void display_image(Image *image, Screen *screen);
 
 // Image functions
+rgb_t avg_rgb(unsigned char *img, float ratio_x, float ratio_y, int x, int y, int width, int height, int channels);
 char *resize_image(Image *image, Screen *screen);
 void load_image(char *filename, Image *settings);
 
@@ -48,7 +51,7 @@ long get_nb_threads(void);
 
 typedef struct {
     Image *image;
-    Screen * screen;
+    Screen *screen;
     int start_index;
     int end_index;
     float ratio_x;

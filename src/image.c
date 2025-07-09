@@ -1,4 +1,8 @@
-#include "../include/visualizer.h"
+#ifdef USE_CUDA
+    #include "../include/visualizer_cuda.cuh"
+#else
+    #include "../include/visualizer.h"
+#endif // USE_CUDA
 
 rgb_t avg_rgb(unsigned char *img, float ratio_x, float ratio_y, int x, int y, int width, int height, int channels)
 {
@@ -41,30 +45,15 @@ void *resize_image_part(void *data)
     return NULL;
 }
 
-char *resize_image(Image *image, Screen *screen)
+char *resize_image_with_threads(Screen *screen, Image *image, float ratio_x, float ratio_y)
 {
-    float img_ratio = 0;
-    float ratio_x = 0.0;
-    float ratio_y = 0.0;
-    long nb_thread = 0;
+    long nb_thread = get_nb_threads();
     pthread_t *threads_id = NULL;
     ThreadData *threads_data = NULL;
     float thread_ratio = 0.0;
-    char pixel[] = "\033[48;2;000;000;000m ";
 
-    img_ratio = (float) image->width / image->height;
-    if (img_ratio > ((float) screen->cols / screen->rows) / screen->char_ratio)
-        screen->rows = screen->cols / (img_ratio * screen->char_ratio);
-    else
-        screen->cols = screen->rows * img_ratio * screen->char_ratio;
-    screen->print_buffer = malloc(sizeof(char) * (sizeof(pixel) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows));
-    if (screen->print_buffer == NULL) {
-        fprintf(stderr, "Malloc failed!\n");
-        exit(1);
-    }
-    ratio_x = (float) image->width / screen->cols;
-    ratio_y = (float) image->height / screen->rows;
-    nb_thread = get_nb_threads();
+    if (nb_thread >= 2)
+        nb_thread -= 1;
     thread_ratio = (float) (screen->cols * screen->rows) / nb_thread;
     threads_id = malloc(sizeof(pthread_t) * nb_thread);
     threads_data = malloc(sizeof(ThreadData) * nb_thread);
@@ -86,5 +75,34 @@ char *resize_image(Image *image, Screen *screen)
     }
     free(threads_id);
     free(threads_data);
+    return screen->print_buffer;
+}
+
+char *resize_image(Image *image, Screen *screen)
+{
+    float img_ratio = 0;
+    float ratio_x = 0.0;
+    float ratio_y = 0.0;
+    char pixel[] = "\033[48;2;000;000;000m ";
+
+    img_ratio = (float) image->width / image->height;
+    if (img_ratio > ((float) screen->cols / screen->rows) / screen->char_ratio)
+        screen->rows = screen->cols / (img_ratio * screen->char_ratio);
+    else
+        screen->cols = screen->rows * img_ratio * screen->char_ratio;
+    screen->print_buffer = malloc(sizeof(char) * (sizeof(pixel) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows));
+    if (screen->print_buffer == NULL) {
+        fprintf(stderr, "Malloc failed!\n");
+        exit(1);
+    }
+    ratio_x = (float) image->width / screen->cols;
+    ratio_y = (float) image->height / screen->rows;
+    #ifdef USE_CUDA
+        if (resize_cuda(screen, image, ratio_x, ratio_y) != 0)
+            return resize_image_with_threads(screen, image, ratio_x, ratio_y);
+        return screen->print_buffer;
+    #else
+        return resize_image_with_threads(screen, image, ratio_x, ratio_y);
+    #endif
     return screen->print_buffer;
 }

@@ -1,20 +1,41 @@
 # Source files
-SRC	=	src/main.c\
-		src/image.c\
-		src/print.c\
-		src/thread.c\
-		src/terminal.c\
-		src/load_image.c\
+SRC_C	=	src/main.c\
+			src/image.c\
+			src/print.c\
+			src/thread.c\
+			src/terminal.c\
+			src/load_image.c\
 
-OBJ	=	$(SRC:.c=.o)
-N_FILES	:=	$(words $(SRC))
+SRC_CU	=	src/resize_cuda.cu\
+			src/cuda_kernels.cu\
+
+OBJ_C	=	$(SRC_C:.c=.o)
+OBJ_CU	=	$(SRC_CU:.cu=.o)
+
+# Compilation parameters
+GPU_COMPILER	=	nvcc
+C_COMPILER	=	gcc
+LIBS=	-lm -lpthread -lpng
+GPU_COMPILER_FLAGS	=	-DUSE_CUDA -Wno-deprecated-gpu-targets -g -Xcompiler -fPIC $(LIBS)
+C_COMPILER_FLAGS	=	-Wall -Wextra -W -g $(LIBS)
+MAKEFLAGS	=	-j$(shell nproc) --silent --no-print-directory
+
+NVCC := $(shell which nvcc 2>/dev/null)
+ifeq ($(NVCC),)
+	COMPILER    =   $(C_COMPILER)
+	COMPILER_FLAGS  = $(C_COMPILER_FLAGS)
+	OBJ =   $(OBJ_C)
+	TOTAL_FILES =   $(SRC_C)
+else
+	COMPILER    =   $(GPU_COMPILER)
+	COMPILER_FLAGS  =   $(GPU_COMPILER_FLAGS)
+	OBJ =   $(OBJ_C) $(OBJ_CU)
+	TOTAL_FILES =   $(SRC_C) $(SRC_CU)
+endif
+
+N_FILES	:=	$(words $(TOTAL_FILES))
 CURRENT_FILE	:=	0
 NAME	=	ImageVisualizer
-
-# Compilation flags
-COMPILER	=	gcc
-COMPILER_FLAGS	=	-Wall -Wextra -W -g -lm -lpthread -lpng
-MAKEFLAGS	=	-j$(shell nproc) --silent --no-print-directory
 
 # Colors
 RED=\033[0;31m
@@ -46,8 +67,14 @@ $(NAME):
 	@echo -ne "[$(YELLOW)$(NAME)$(RESET)] "
 	@echo -ne "Main program successfully compiled !\n"
 
-# Rule to compile objects files of the library
-$(OBJ): %.o: %.c
+# Rule to compile objects files
+$(OBJ_C): %.o: %.c
+	@echo -ne "[$(BLUE)COMPILATION$(RESET)] "
+	@echo -ne "($(shell expr $(CURRENT_FILE) + 1)/$(N_FILES)) $@\r"
+	@$(COMPILER) -c $< -o $@ $(COMPILER_FLAGS)
+	@$(eval CURRENT_FILE := $(shell expr $(CURRENT_FILE) + 1))
+
+$(OBJ_CU): %.o: %.cu
 	@echo -ne "[$(BLUE)COMPILATION$(RESET)] "
 	@echo -ne "($(shell expr $(CURRENT_FILE) + 1)/$(N_FILES)) $@\r"
 	@$(COMPILER) -c $< -o $@ $(COMPILER_FLAGS)
@@ -57,7 +84,8 @@ $(OBJ): %.o: %.c
 clean:
 	@echo -ne "[$(RED)REMOVE$(RESET)] "
 	@echo -ne "Removing all object files...\n"
-	@rm -f $(OBJ)
+	@rm -f $(OBJ_C)
+	@rm -f $(OBJ_CU)
 	@echo -ne "[$(RED)REMOVE$(RESET)] "
 	@echo -ne "All objects files successfully removed !\n"
 

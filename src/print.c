@@ -1,5 +1,4 @@
 #include "../include/visualizer.h"
-#include <unistd.h>
 
 void apply_color_at_coord_on_buffer(Screen *screen, int x, int y, rgb_t color)
 {

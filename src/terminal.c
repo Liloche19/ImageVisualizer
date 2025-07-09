@@ -12,5 +12,6 @@ void get_screen_informations(Screen *settings)
     else
         settings->char_ratio = DEFAULT_CHAR_RATIO;
     settings->print_buffer = NULL;
+    settings->gpu_available = false;
     return;
 }
