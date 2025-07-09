@@ -24,8 +24,8 @@ int main(int argc, char **argv)
     filename = argv[1];
     if (filename == NULL)
         return 0;
-    load_image(filename, &image);
     get_screen_informations(&screen);
+    load_image(filename, &image);
     display_image(&image, &screen);
     free(image.pixels);
     return 0;

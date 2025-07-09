@@ -11,5 +11,6 @@ void get_screen_informations(Screen *settings)
         settings->char_ratio = (float) win.ws_ypixel / win.ws_row / ((float) win.ws_xpixel / win.ws_col);
     else
         settings->char_ratio = DEFAULT_CHAR_RATIO;
+    settings->print_buffer = NULL;
     return;
 }

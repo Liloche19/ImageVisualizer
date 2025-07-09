@@ -27,16 +27,6 @@ rgb_t avg_rgb(unsigned char *img, float ratio_x, float ratio_y, int x, int y, in
     return rgb;
 }
 
-void apply_color_at_coord(unsigned char *image, rgb_t rgb, int x, int y, int width)
-{
-    int index = x * 3 + y * width * 3;
-
-    image[index] = rgb.rgb[0];
-    image[index + 1] = rgb.rgb[1];
-    image[index + 2] = rgb.rgb[2];
-    return;
-}
-
 void *resize_image_part(void *data)
 {
     ThreadData *settings = data;
@@ -45,13 +35,13 @@ void *resize_image_part(void *data)
 
     for (int i = settings->start_index; i < settings->end_index; i++) {
         y = i / settings->screen->cols;
-        x = i - y * settings->screen->cols;
-        apply_color_at_coord(settings->screen->resized, avg_rgb(settings->image->pixels, settings->ratio_x, settings->ratio_y, x, y, settings->image->width, settings->image->height, settings->image->channels), x, y, settings->screen->cols);
+        x = i - (y * settings->screen->cols);
+        apply_color_at_coord_on_buffer(settings->screen, x, y, avg_rgb(settings->image->pixels, settings->ratio_x, settings->ratio_y, x, y, settings->image->width, settings->image->height, settings->image->channels));
     }
     return NULL;
 }
 
-unsigned char *resize_image(Image *image, Screen *screen)
+char *resize_image(Image *image, Screen *screen)
 {
     float img_ratio = 0;
     float ratio_x = 0.0;
@@ -60,14 +50,15 @@ unsigned char *resize_image(Image *image, Screen *screen)
     pthread_t *threads_id = NULL;
     ThreadData *threads_data = NULL;
     float thread_ratio = 0.0;
+    char pixel[] = "\033[48;2;000;000;000m ";
 
     img_ratio = (float) image->width / image->height;
     if (img_ratio > ((float) screen->cols / screen->rows) / screen->char_ratio)
         screen->rows = screen->cols / (img_ratio * screen->char_ratio);
     else
         screen->cols = screen->rows * img_ratio * screen->char_ratio;
-    screen->resized = malloc(sizeof(unsigned char) * screen->cols * screen->rows * 3);
-    if (screen->resized == NULL) {
+    screen->print_buffer = malloc(sizeof(char) * (sizeof(pixel) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows));
+    if (screen->print_buffer == NULL) {
         fprintf(stderr, "Malloc failed!\n");
         exit(1);
     }
@@ -95,9 +86,5 @@ unsigned char *resize_image(Image *image, Screen *screen)
     }
     free(threads_id);
     free(threads_data);
-    return screen->resized;
-    for (int x = 0; x < screen->cols; x++)
-        for (int y = 0; y < screen->rows; y++)
-            apply_color_at_coord(screen->resized, avg_rgb(image->pixels, ratio_x, ratio_y, x, y, image->width, image->height, image->channels), x, y, screen->cols);
-    return screen->resized;
+    return screen->print_buffer;
 }

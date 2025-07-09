@@ -24,19 +24,20 @@ typedef struct {
 typedef struct {
     int cols;
     int rows;
-    unsigned char *resized;
+    char *print_buffer;
     float char_ratio;
 } Screen;
 
 typedef union rgb_u {
-    char rgb[3];
+    unsigned char rgb[3];
 } rgb_t;
 
 // Display functions
+void apply_color_at_coord_on_buffer(Screen *screen, int x, int y, rgb_t color);
 void display_image(Image *image, Screen *screen);
 
 // Image functions
-unsigned char *resize_image(Image *image, Screen *screen);
+char *resize_image(Image *image, Screen *screen);
 void load_image(char *filename, Image *settings);
 
 // Terminal functions
