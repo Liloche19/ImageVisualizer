@@ -58,6 +58,8 @@ __global__ void resize_image_cuda(Screen *screen, Image *image, float ratio_x, f
     int y = index / screen->cols;
     int x = index - (y * screen->cols);
 
+    if (x >= screen->cols || y >= screen->rows)
+        return;
     apply_color_at_coord_on_buffer_cuda(screen, x, y, avg_rgb_cuda(image->pixels, ratio_x, ratio_y, x, y, image->width, image->height, image->channels));
     return;
 }
