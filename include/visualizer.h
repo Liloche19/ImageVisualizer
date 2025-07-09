@@ -27,6 +27,7 @@ typedef struct {
     int cols;
     int rows;
     char *print_buffer;
+    int buffer_size;
     float char_ratio;
     char *gpu_print_buffer;
 } Screen;

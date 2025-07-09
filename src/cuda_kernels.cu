@@ -12,9 +12,9 @@ __device__ rgb_t avg_rgb_cuda(unsigned char *img, float ratio_x, float ratio_y, 
 
     for (int offset_x = 0; offset_x < ratio_x; offset_x++) {
         for (int offset_y = 0; offset_y < ratio_y; offset_y++) {
-            coord = (((int) (x * ratio_x) + offset_x) + ((int) (y * ratio_y) + offset_y) * width) * channels;
-            if (coord + 2 >= coord_max || coord < 0)
+            if (((int) (x * ratio_x) + offset_x) >= width || ((int) (y * ratio_y) + offset_y) >= height)
                 break;
+            coord = (((int) (x * ratio_x) + offset_x) + ((int) (y * ratio_y) + offset_y) * width) * channels;
             nb_pixels++;
             r += img[coord];
             g += img[coord + 1];
@@ -30,7 +30,7 @@ __device__ rgb_t avg_rgb_cuda(unsigned char *img, float ratio_x, float ratio_y, 
 __device__ void apply_color_at_coord_on_buffer_cuda(Screen *screen, int x, int y, rgb_t color)
 {
     char pixel[] = "\033[48;2;000;000;000m ";
-    int start_index = sizeof(pixel) * x + (sizeof(RESET) + 1 + sizeof(pixel) * screen->cols) * y;
+    int start_index = 21 * x + (sizeof(RESET) + 1 + 21 * screen->cols) * y;
 
     pixel[7] = (color.rgb[0] / 100) + 48;
     pixel[8] = ((color.rgb[0] / 10) % 10) + 48;
@@ -48,6 +48,11 @@ __device__ void apply_color_at_coord_on_buffer_cuda(Screen *screen, int x, int y
         for (int i = 0; i < (int) sizeof(RESET); i++)
             screen->gpu_print_buffer[start_index + sizeof(pixel) + i] = RESET[i];
         screen->gpu_print_buffer[start_index + sizeof(pixel) + sizeof(RESET)] = '\n';
+        if (start_index + sizeof(pixel) + sizeof(RESET) > screen->buffer_size) {
+                printf("Thread (%d,%d): Déborde du buffer à l'index %d (taille: %d)\n",
+                       x, y, start_index, screen->buffer_size);
+                return;
+            }
     }
     return;
 }
@@ -58,7 +63,7 @@ __global__ void resize_image_cuda(Screen *screen, Image *image, float ratio_x, f
     int y = index / screen->cols;
     int x = index - (y * screen->cols);
 
-    if (x >= screen->cols || y >= screen->rows)
+    if (index >= screen->cols * screen->rows)
         return;
     apply_color_at_coord_on_buffer_cuda(screen, x, y, avg_rgb_cuda(image->gpu_pixels, ratio_x, ratio_y, x, y, image->width, image->height, image->channels));
     return;
