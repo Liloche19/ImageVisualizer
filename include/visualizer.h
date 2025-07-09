@@ -16,6 +16,7 @@
 
 typedef struct {
     unsigned char *pixels;
+    unsigned char *gpu_pixels;
     char *filename;
     int height;
     int width;
@@ -27,7 +28,7 @@ typedef struct {
     int rows;
     char *print_buffer;
     float char_ratio;
-    bool gpu_available;
+    char *gpu_print_buffer;
 } Screen;
 
 typedef union rgb_u {

@@ -43,11 +43,11 @@ __device__ void apply_color_at_coord_on_buffer_cuda(Screen *screen, int x, int y
     pixel[17] = (color.rgb[2] % 10) + 48;
     pixel[19] = CHAR;
     for (int i = 0; i < (int) sizeof(pixel); i++)
-        screen->print_buffer[start_index + i] = pixel[i];
+        screen->gpu_print_buffer[start_index + i] = pixel[i];
     if (x == screen->cols - 1) {
         for (int i = 0; i < (int) sizeof(RESET); i++)
-            screen->print_buffer[start_index + sizeof(pixel) + i] = RESET[i];
-        screen->print_buffer[start_index + sizeof(pixel) + sizeof(RESET)] = '\n';
+            screen->gpu_print_buffer[start_index + sizeof(pixel) + i] = RESET[i];
+        screen->gpu_print_buffer[start_index + sizeof(pixel) + sizeof(RESET)] = '\n';
     }
     return;
 }
@@ -60,6 +60,6 @@ __global__ void resize_image_cuda(Screen *screen, Image *image, float ratio_x, f
 
     if (x >= screen->cols || y >= screen->rows)
         return;
-    apply_color_at_coord_on_buffer_cuda(screen, x, y, avg_rgb_cuda(image->pixels, ratio_x, ratio_y, x, y, image->width, image->height, image->channels));
+    apply_color_at_coord_on_buffer_cuda(screen, x, y, avg_rgb_cuda(image->gpu_pixels, ratio_x, ratio_y, x, y, image->width, image->height, image->channels));
     return;
 }
