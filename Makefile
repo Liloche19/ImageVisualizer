@@ -7,6 +7,7 @@ SRC_C	=	src/main.c\
 			src/load_image.c\
 			src/image_loaders/png.c\
 			src/image_loaders/gif.c\
+			src/image_loaders/bmp.c\
 			src/image_loaders/jpeg.c\
 			src/image_loaders/webp.c\
 
