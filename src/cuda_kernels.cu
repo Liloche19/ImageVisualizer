@@ -8,7 +8,6 @@ __device__ rgb_t avg_rgb_cuda(unsigned char *img, float ratio_x, float ratio_y, 
     int b = 0;
     int coord = 0;
     int nb_pixels = 0;
-    int coord_max = height * width * channels;
 
     for (int offset_x = 0; offset_x < ratio_x; offset_x++) {
         for (int offset_y = 0; offset_y < ratio_y; offset_y++) {
