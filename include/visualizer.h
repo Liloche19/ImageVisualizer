@@ -45,6 +45,11 @@ rgb_t avg_rgb(unsigned char *img, float ratio_x, float ratio_y, int x, int y, in
 char *resize_image(Image *image, Screen *screen);
 void load_image(char *filename, Image *settings);
 
+// Image loaders
+void open_jpeg(char *filename, Image *settings);
+void open_png(char *filename, Image *settings);
+void open_gif(char *filename, Image *settings);
+
 // Terminal functions
 void get_screen_informations(Screen *settings);
 
