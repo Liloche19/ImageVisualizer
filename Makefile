@@ -15,9 +15,9 @@ OBJ_CU	=	$(SRC_CU:.cu=.o)
 # Compilation parameters
 GPU_COMPILER	=	nvcc
 C_COMPILER	=	gcc
-LIBS=	-lm -lpthread -lpng
-GPU_COMPILER_FLAGS	=	-DUSE_CUDA -Wno-deprecated-gpu-targets -g -Xcompiler -fPIC $(LIBS)
-C_COMPILER_FLAGS	=	-Wall -Wextra -W -g $(LIBS)
+LIBS=	-lm -lpthread -lpng -ljpeg
+GPU_COMPILER_FLAGS	=	-DUSE_CUDA -O2 -Wno-deprecated-gpu-targets -g -Xcompiler -fPIC $(LIBS)
+C_COMPILER_FLAGS	=	-O2 -Wall -Wextra -W -g $(LIBS)
 MAKEFLAGS	=	-j$(shell nproc) --silent --no-print-directory
 
 NVCC := $(shell which nvcc 2>/dev/null)
