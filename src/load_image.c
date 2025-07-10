@@ -20,6 +20,8 @@ void load_image(char *filename, Image *settings)
         return open_jpeg(filename, settings);
     if (strcmp(extension, "gif") == 0 || strcmp(extension, "GIF") == 0)
         return open_gif(filename, settings);
+    if (strcmp(extension, "webp") == 0 || strcmp(extension, "webp") == 0)
+        return open_webp(filename, settings);
     fprintf(stderr, "Uknown format detected!\n");
     exit(1);
 }

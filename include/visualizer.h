@@ -49,6 +49,7 @@ void load_image(char *filename, Image *settings);
 void open_jpeg(char *filename, Image *settings);
 void open_png(char *filename, Image *settings);
 void open_gif(char *filename, Image *settings);
+void open_webp(char *filename, Image *settings);
 
 // Terminal functions
 void get_screen_informations(Screen *settings);
