@@ -42,8 +42,8 @@ extern "C" int resize_cuda(Screen *screen, Image *image, float ratio_x, float ra
         fprintf(stderr, "cudaMemcpy to host failed!\n%s\n", cudaGetErrorString(err));
         exit(1);
     }
-    cudaFree(gpu_screen->gpu_print_buffer);
-    cudaFree(gpu_image->gpu_pixels);
+    cudaFree(screen->gpu_print_buffer);
+    cudaFree(image->gpu_pixels);
     cudaFree(gpu_screen);
     cudaFree(gpu_image);
     return 0;
