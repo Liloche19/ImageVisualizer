@@ -8,6 +8,7 @@
     #include <pthread.h>
     #include <time.h>
     #include <stdbool.h>
+    #include <pthread.h>
     #include <sys/ioctl.h>
 
     #define RESET "\033[0m"
@@ -30,6 +31,7 @@ typedef struct {
     int buffer_size;
     float char_ratio;
     char *gpu_print_buffer;
+    pthread_t gpu_loader;
 } Screen;
 
 typedef union rgb_u {

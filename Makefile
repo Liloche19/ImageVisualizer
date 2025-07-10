@@ -11,7 +11,8 @@ SRC_C	=	src/main.c\
 			src/image_loaders/jpeg.c\
 			src/image_loaders/webp.c\
 
-SRC_CU	=	src/resize_cuda.cu\
+SRC_CU	=	src/init_gpu.cu\
+			src/resize_cuda.cu\
 			src/cuda_kernels.cu\
 
 OBJ_C	=	$(SRC_C:.c=.o)
@@ -34,7 +35,7 @@ ifeq ($(NVCC),)
 else
 	COMPILER    =   $(GPU_COMPILER)
 	COMPILER_FLAGS  =   $(GPU_COMPILER_FLAGS)
-	OBJ =   $(OBJ_C) $(OBJ_CU)
+	OBJ =   $(OBJ_CU) $(OBJ_C)
 	TOTAL_FILES =   $(SRC_C) $(SRC_CU)
 endif
 

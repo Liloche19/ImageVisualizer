@@ -18,6 +18,7 @@ extern "C" int resize_cuda(Screen *screen, Image *image, float ratio_x, float ra
     nb_blocks = (nb_pixels + CUDA_BLOCK_SIZE - 1) / CUDA_BLOCK_SIZE;
     screen->buffer_size = sizeof(char) * (21 * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows);
     image_size = sizeof(unsigned char) * image->channels * image->height * image->width;
+    pthread_join(screen->gpu_loader, NULL);
     if (cudaMalloc(&gpu_screen, sizeof(Screen)) != cudaSuccess || cudaMalloc(&gpu_image, sizeof(Image)) != cudaSuccess) {
         fprintf(stderr, "Error initialising structures!\n");
         exit(1);
