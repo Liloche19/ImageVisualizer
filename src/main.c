@@ -1,3 +1,4 @@
+#include <gif_lib.h>
 #ifdef USE_CUDA
 #include "../include/visualizer_cuda.cuh"
 #else
@@ -19,6 +20,7 @@ int main(int argc, char **argv)
     char *filename = NULL;
     Screen screen;
     Image image;
+    int err = 0;
 
     if (argc != 2)
         return help(argv[0], 1);
@@ -33,6 +35,8 @@ int main(int argc, char **argv)
     get_screen_informations(&screen);
     load_image(filename, &image);
     display_image(&image, &screen);
+    if (image.gif != NULL)
+        DGifCloseFile(image.gif, &err);
     free(image.pixels);
     return 0;
 }

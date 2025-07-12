@@ -1,4 +1,15 @@
 #include "../include/visualizer.h"
+#include <unistd.h>
+
+long long get_time_ms(void)
+{
+    long long time = 0;
+    struct timespec ts;
+
+    clock_gettime(CLOCK_REALTIME, &ts);
+    time = (ts.tv_sec) * 1000 + ts.tv_nsec / 1000000;
+    return time;
+}
 
 void apply_color_at_coord_on_buffer(Screen *screen, int x, int y, rgb_t color)
 {
@@ -29,10 +40,23 @@ void display_image(Image *image, Screen *screen)
 {
     char pixel[] = "\033[48;2;000;000;000m ";
     int size = 0;
+    long long last_frame_time = get_time_ms();
+    long long actual_frame_time = 0;
+    long diff_time = 0;
 
-    screen->print_buffer = resize_image(image, screen);
-    size = (sizeof(pixel) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows);
-    write(1, screen->print_buffer, size);
-    free(screen->print_buffer);
+    while (image->actual_frame < image->nb_frames) {
+        if (image->gif != NULL)
+            get_pixels_from_frame_gif(image, image->actual_frame);
+        get_screen_informations(screen);
+        screen->print_buffer = resize_image(image, screen);
+        size = (sizeof(pixel) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows);
+        actual_frame_time = get_time_ms();
+        if (actual_frame_time - last_frame_time + image->ms_to_wait > 0)
+            usleep((actual_frame_time - last_frame_time + image->ms_to_wait) * 1000);
+        write(1, screen->print_buffer, size);
+        last_frame_time = get_time_ms();
+        image->actual_frame++;
+        free(screen->print_buffer);
+    }
     return;
 }

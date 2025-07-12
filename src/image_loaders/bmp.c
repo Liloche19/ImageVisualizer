@@ -1,5 +1,4 @@
 #include "../../include/visualizer.h"
-#include <alloca.h>
 #include "bmp.h"
 
 void open_bmp(char *filename, Image *settings)
@@ -58,5 +57,7 @@ void open_bmp(char *filename, Image *settings)
     }
     free(row);
     fclose(file);
+    settings->actual_frame = 0;
+    settings->nb_frames = 1;
     return;
 }

@@ -39,5 +39,7 @@ void open_jpeg(char *filename, Image *settings)
     jpeg_destroy_decompress(&cinfo);
     fclose(infile);
     settings->pixels = buffer;
+    settings->actual_frame = 0;
+    settings->nb_frames = 1;
     return;
 }

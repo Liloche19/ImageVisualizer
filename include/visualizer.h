@@ -9,6 +9,7 @@
     #include <time.h>
     #include <stdbool.h>
     #include <pthread.h>
+    #include <gif_lib.h>
     #include <sys/ioctl.h>
 
     #define RESET "\033[0m"
@@ -22,6 +23,10 @@ typedef struct {
     int height;
     int width;
     int channels;
+    GifFileType *gif;
+    int nb_frames;
+    int actual_frame;
+    int ms_to_wait;
 } Image;
 
 typedef struct {
@@ -53,6 +58,8 @@ void open_png(char *filename, Image *settings);
 void open_gif(char *filename, Image *settings);
 void open_webp(char *filename, Image *settings);
 void open_bmp(char *filename, Image *settings);
+
+void get_pixels_from_frame_gif(Image *settings, int frame_to_load);
 
 // Terminal functions
 void get_screen_informations(Screen *settings);

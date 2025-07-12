@@ -14,6 +14,10 @@ void load_image(char *filename, Image *settings)
 {
     char *extension = get_extension(filename);
 
+    settings->pixels = NULL;
+    settings->gif = NULL;
+    settings->ms_to_wait = 0;
+    settings->gif = NULL;
     if (strcmp(extension, "png") == 0 || strcmp(extension, "PNG") == 0)
         return open_png(filename, settings);
     if (strcmp(extension, "jpg") == 0 || strcmp(extension, "JPG") == 0 || strcmp(extension, "jpeg") == 0 || strcmp(extension, "JPEG") == 0)

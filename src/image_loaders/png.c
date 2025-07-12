@@ -60,5 +60,7 @@ void open_png(char *filename, Image *settings)
     fclose(fp);
     png_destroy_read_struct(&png, &info, NULL);
     free(rows);
+    settings->actual_frame = 0;
+    settings->nb_frames = 1;
     return;
 }

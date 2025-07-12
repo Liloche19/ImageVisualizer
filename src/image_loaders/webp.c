@@ -34,5 +34,7 @@ void open_webp(char *filename, Image *settings)
         fprintf(stderr, "Malloc failed!\n");
         exit(1);
     }
+    settings->actual_frame = 0;
+    settings->nb_frames = 1;
     return;
 }
