@@ -18,6 +18,7 @@
 
 typedef struct {
     unsigned char *pixels;
+    unsigned char *previous_pixels;
     unsigned char *gpu_pixels;
     char *filename;
     int height;
@@ -60,6 +61,13 @@ void open_webp(char *filename, Image *settings);
 void open_bmp(char *filename, Image *settings);
 
 void get_pixels_from_frame_gif(Image *settings, int frame_to_load);
+
+typedef struct {
+    int offset_left;
+    int offset_top;
+    int width;
+    int height;
+} GifZone;
 
 // Terminal functions
 void get_screen_informations(Screen *settings);

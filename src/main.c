@@ -35,8 +35,10 @@ int main(int argc, char **argv)
     get_screen_informations(&screen);
     load_image(filename, &image);
     display_image(&image, &screen);
-    if (image.gif != NULL)
+    if (image.gif != NULL) {
         DGifCloseFile(image.gif, &err);
+        free(image.previous_pixels);
+    }
     free(image.pixels);
     return 0;
 }
