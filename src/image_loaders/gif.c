@@ -29,7 +29,6 @@ void get_pixels_from_frame_gif(Image *settings, int frame_to_load)
         zone_previous.height = desc.Height;
     }
     if (disposal_minus_one == DISPOSE_BACKGROUND) {
-        printf("retablishing background!\n");
         for (int y = 0; y < zone_previous.height; y++) {
             for (int x = 0; x < zone_previous.width; x++) {
                 idx = ((zone_previous.offset_top + y) * settings->width + (zone_previous.offset_left + x)) * 3;
@@ -40,7 +39,6 @@ void get_pixels_from_frame_gif(Image *settings, int frame_to_load)
         }
     }
     if (disposal_minus_one == DISPOSE_PREVIOUS) {
-        printf("Retablishing previous!\n");
         for (int y = 0; y < zone_previous.height; y++) {
             for (int x = 0; x < zone_previous.width; x++) {
                 idx = ((zone_previous.offset_top + y) * settings->width + (zone_previous.offset_left + x)) * 3;
