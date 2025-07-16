@@ -16,6 +16,7 @@ void load_image(char *filename, Image *settings)
 
     settings->pixels = NULL;
     settings->gif = NULL;
+    settings->use_webp = false;
     settings->ms_to_wait = 0;
     if (strcmp(extension, "png") == 0 || strcmp(extension, "PNG") == 0)
         return open_png(filename, settings);

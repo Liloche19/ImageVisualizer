@@ -11,6 +11,7 @@
     #include <pthread.h>
     #include <gif_lib.h>
     #include <sys/ioctl.h>
+    #include <webp/demux.h>
 
     #define RESET "\033[0m"
     #define CHAR ' '
@@ -25,6 +26,8 @@ typedef struct {
     int width;
     int channels;
     GifFileType *gif;
+    WebPIterator webp;
+    bool use_webp;
     int nb_frames;
     int actual_frame;
     int ms_to_wait;
@@ -61,13 +64,15 @@ void open_webp(char *filename, Image *settings);
 void open_bmp(char *filename, Image *settings);
 
 void get_pixels_from_frame_gif(Image *settings, int frame_to_load);
+void get_pixels_from_next_frame_webp(Image *settings);
+
 
 typedef struct {
     int offset_left;
     int offset_top;
     int width;
     int height;
-} GifZone;
+} FrameZone;
 
 // Terminal functions
 void get_screen_informations(Screen *settings);

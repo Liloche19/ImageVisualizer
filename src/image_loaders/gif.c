@@ -15,8 +15,8 @@ void get_pixels_from_frame_gif(Image *settings, int frame_to_load)
     GifColorType bg_color = settings->gif->SColorMap->Colors[settings->gif->SBackGroundColor];
     GifImageDesc desc;
     GifColorType c;
-    GifZone zone;
-    GifZone zone_previous;
+    FrameZone zone;
+    FrameZone zone_previous;
 
     frame = &settings->gif->SavedImages[frame_to_load];
     if (frame_to_load != 0) {

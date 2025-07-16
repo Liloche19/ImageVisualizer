@@ -39,6 +39,8 @@ int main(int argc, char **argv)
         DGifCloseFile(image.gif, &err);
         free(image.previous_pixels);
     }
+    if (image.use_webp)
+        WebPDemuxReleaseIterator(&image.webp);
     free(image.pixels);
     return 0;
 }

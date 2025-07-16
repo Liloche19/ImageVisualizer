@@ -47,6 +47,8 @@ void display_image(Image *image, Screen *screen)
     while (image->actual_frame < image->nb_frames) {
         if (image->gif != NULL)
             get_pixels_from_frame_gif(image, image->actual_frame);
+        if (image->use_webp)
+            get_pixels_from_next_frame_webp(image);
         get_screen_informations(screen);
         screen->print_buffer = resize_image(image, screen);
         size = (sizeof(pixel) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows);
