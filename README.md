@@ -1,2 +1,2 @@
 # ImageVisualizer
-An Image visualizer in your terminal written in Python
+An Image visualizer in your terminal written in C / CUDA
