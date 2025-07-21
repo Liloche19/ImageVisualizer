@@ -1,10 +1,10 @@
 # Source files
 SRC_C	=	src/main.c\
-			src/image.c\
-			src/print.c\
+			src/screen.c\
 			src/thread.c\
-			src/terminal.c\
+			src/display.c\
 			src/load_image.c\
+			src/resize_image.c\
 			src/image_loaders/png.c\
 			src/image_loaders/gif.c\
 			src/image_loaders/bmp.c\
@@ -13,7 +13,7 @@ SRC_C	=	src/main.c\
 
 SRC_CU	=	src/init_gpu.cu\
 			src/resize_cuda.cu\
-			src/cuda_kernels.cu\
+			src/cuda_kernel.cu\
 
 OBJ_C	=	$(SRC_C:.c=.o)
 OBJ_CU	=	$(SRC_CU:.cu=.o)
