@@ -71,18 +71,20 @@ $(NAME):
 	@$(COMPILER) -o $(NAME) $(OBJ) $(COMPILER_FLAGS)
 	@echo ""
 	@echo -ne "[$(YELLOW)$(NAME)$(RESET)] "
-	@echo -ne "Main program successfully compiled !\n"
+	@echo -ne "Main program successfully compiled!\n"
 
 # Rule to compile objects files
 $(OBJ_C): %.o: %.c
+	@echo -ne "\033[2K\r"
 	@echo -ne "[$(BLUE)COMPILATION$(RESET)] "
-	@echo -ne "($(shell expr $(CURRENT_FILE) + 1)/$(N_FILES)) $@\r"
+	@echo -ne "($(shell expr $(CURRENT_FILE) + 1)/$(N_FILES)) $@"
 	@$(COMPILER) -c $< -o $@ $(COMPILER_FLAGS)
 	@$(eval CURRENT_FILE := $(shell expr $(CURRENT_FILE) + 1))
 
 $(OBJ_CU): %.o: %.cu
+	@echo -ne "\033[2K\r"
 	@echo -ne "[$(BLUE)COMPILATION$(RESET)] "
-	@echo -ne "($(shell expr $(CURRENT_FILE) + 1)/$(N_FILES)) $@\r"
+	@echo -ne "($(shell expr $(CURRENT_FILE) + 1)/$(N_FILES)) $@"
 	@$(COMPILER) -c $< -o $@ $(COMPILER_FLAGS)
 	@$(eval CURRENT_FILE := $(shell expr $(CURRENT_FILE) + 1))
 
@@ -93,7 +95,7 @@ clean:
 	@rm -f $(OBJ_C)
 	@rm -f $(OBJ_CU)
 	@echo -ne "[$(RED)REMOVE$(RESET)] "
-	@echo -ne "All objects files successfully removed !\n"
+	@echo -ne "All objects files successfully removed!\n"
 
 # Rule to remove all binary files
 fclean:
@@ -102,10 +104,10 @@ fclean:
 	@echo -ne "Removing Main program binary...\n"
 	@rm -f $(NAME)
 	@echo -ne "[$(RED)REMOVE$(RESET)] "
-	@echo -ne "Main program binary successfully removed !\n"
+	@echo -ne "Main program binary successfully removed!\n"
 	@echo ""
 	@echo -ne "[$(RED)REMOVE$(RESET)] "
-	@echo -ne "Repository successfully cleaned !\n"
+	@echo -ne "Repository successfully cleaned!\n"
 
 # Rule to fully recompile the prgram
 re:
