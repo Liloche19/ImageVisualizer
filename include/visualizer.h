@@ -25,12 +25,14 @@ typedef struct {
     int height;
     int width;
     int channels;
-    GifFileType *gif;
-    WebPIterator webp;
-    bool use_webp;
     int nb_frames;
     int actual_frame;
     int ms_to_wait;
+    GifFileType *gif;
+    WebPIterator webp;
+    WebPDemuxer *demux;
+    unsigned char *webp_data;
+    bool use_webp;
 } Image;
 
 typedef struct {

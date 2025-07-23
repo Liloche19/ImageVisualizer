@@ -59,6 +59,7 @@ void get_pixels_from_next_frame_webp(Image *settings)
             }
         }
     }
+    free(frame);
     return;
 }
 
@@ -66,8 +67,6 @@ void open_webp(char *filename, Image *settings)
 {
     FILE *file = fopen(filename, "rb");
     size_t file_size = 0;
-    uint8_t *webp_data = NULL;
-    WebPDemuxer* demux = NULL;
     WebPData webp_raw_data;
 
     settings->use_webp = true;
@@ -78,34 +77,32 @@ void open_webp(char *filename, Image *settings)
     fseek(file, 0, SEEK_END);
     file_size = ftell(file);
     rewind(file);
-    webp_data = malloc(file_size);
-    if (!webp_data) {
+    settings->webp_data = malloc(sizeof(unsigned char) * file_size);
+    if (!settings->webp_data) {
         fprintf(stderr, "Malloc failed!\n");
         fclose(file);
         exit(1);
     }
-    if (fread(webp_data, 1, file_size, file) != file_size) {
+    if (fread(settings->webp_data, 1, file_size, file) != file_size) {
         fprintf(stderr, "Error while reading image file!\n");
-        free(webp_data);
+        free(settings->webp_data);
         fclose(file);
         exit(1);
     }
     fclose(file);
     settings->channels = 4;
-    webp_raw_data = (WebPData) {webp_data, file_size};
-    demux = WebPDemux(&webp_raw_data);
-    if (!demux) {
+    webp_raw_data = (WebPData) {settings->webp_data, file_size};
+    settings->demux = WebPDemux(&webp_raw_data);
+    if (!settings->demux) {
         fprintf(stderr, "Error while accessing webp frames!\n");
-        free(webp_data);
+        free(settings->webp_data);
         exit(1);
     }
-    settings->nb_frames = WebPDemuxGetI(demux, WEBP_FF_FRAME_COUNT);
-    if (!WebPDemuxGetFrame(demux, 1, &settings->webp)) {
+    settings->nb_frames = WebPDemuxGetI(settings->demux, WEBP_FF_FRAME_COUNT);
+    if (!WebPDemuxGetFrame(settings->demux, 1, &settings->webp)) {
         fprintf(stderr, "Error while accessing webp frames!\n");
         exit(1);
     }
-    //WebPDemuxDelete(demux);
-    //free(webp_data);
     settings->actual_frame = 0;
     return;
 }

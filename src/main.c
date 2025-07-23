@@ -1,4 +1,5 @@
 #include <gif_lib.h>
+#include <webp/demux.h>
 #ifdef USE_CUDA
 #include "../include/visualizer_cuda.cuh"
 #else
@@ -39,8 +40,11 @@ int main(int argc, char **argv)
         DGifCloseFile(image.gif, &err);
         free(image.previous_pixels);
     }
-    if (image.use_webp)
+    if (image.use_webp) {
         WebPDemuxReleaseIterator(&image.webp);
+        WebPDemuxDelete(image.demux);
+        free(image.webp_data);
+    }
     free(image.pixels);
     return 0;
 }
