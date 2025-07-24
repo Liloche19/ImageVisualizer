@@ -27,8 +27,9 @@ int main(int argc, char **argv)
     filename = argv[1];
     if (filename == NULL)
         return 0;
+    screen.use_gpu = false;
     #ifdef USE_CUDA
-        init_gpu(&screen.gpu_loader);
+        init_gpu(&screen);
     #endif
     get_screen_informations(&screen);
     load_image(filename, &image);

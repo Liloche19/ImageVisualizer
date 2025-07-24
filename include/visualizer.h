@@ -51,6 +51,7 @@ typedef struct {
     int rows;
     int buffer_size;
     float char_ratio;
+    bool use_gpu;
     pthread_t gpu_loader;
 } Screen;
 

@@ -11,7 +11,7 @@ extern "C" {
     int resize_cuda(Screen *screen, Image *image, float ratio_x, float ratio_y);
 
     // init function
-    void init_gpu(pthread_t *threadId);
+    void init_gpu(Screen *gpu_loader);
 #ifdef __cplusplus
 }
 #endif

@@ -4,21 +4,20 @@ extern __global__ void resize_image_cuda(Screen *screen, Image *image, float rat
 
 extern "C" int resize_cuda(Screen *screen, Image *image, float ratio_x, float ratio_y)
 {
-    int device = 0;
-    cudaError_t err = cudaGetDeviceCount(&device);
     int nb_pixels = 0;
     int nb_blocks = 0;
     int image_size = 0;
-    Screen *gpu_screen;
-    Image *gpu_image;
+    cudaError_t err;
+    Screen *gpu_screen = NULL;
+    Image *gpu_image = NULL;
 
-    if (err != cudaSuccess || device == 0)
+    if (!screen->use_gpu)
         return 1;
     nb_pixels = screen->cols * screen->rows;
     nb_blocks = (nb_pixels + CUDA_BLOCK_SIZE - 1) / CUDA_BLOCK_SIZE;
     screen->buffer_size = sizeof(char) * (sizeof(PIXEL_TEMPLATE) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows);
     image_size = sizeof(unsigned char) * image->channels * image->height * image->width;
-    if (pthread_join(screen->gpu_loader, NULL) != 0) {
+    if (image->actual_frame == 0 && pthread_join(screen->gpu_loader, NULL) != 0) {
         fprintf(stderr, "Error while waiting thread!\n");
         exit(1);
     }
