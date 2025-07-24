@@ -115,5 +115,15 @@ void open_gif(char *filename, Image *settings)
         exit(1);
     }
     get_pixels_from_frame_gif(settings, 0);
+    settings->type = GIF;
+    return;
+}
+
+void destroy_gif(Image *image)
+{
+    int err = 0;
+
+    DGifCloseFile(image->gif, &err);
+    free(image->previous_pixels);
     return;
 }

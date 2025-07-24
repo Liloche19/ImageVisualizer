@@ -12,12 +12,16 @@ char *get_extension(char *filename)
 
 void load_image(char *filename, Image *settings)
 {
-    char *extension = get_extension(filename);
+    char *extension = NULL;
 
+    if (access(filename, R_OK) != 0) {
+        fprintf(stderr, "Can't read file!\n");
+        exit(1);
+    }
     settings->pixels = NULL;
-    settings->gif = NULL;
-    settings->use_webp = false;
     settings->ms_to_wait = 0;
+    settings->actual_frame = 0;
+    extension = get_extension(filename);
     if (strcmp(extension, "png") == 0 || strcmp(extension, "PNG") == 0)
         return open_png(filename, settings);
     if (strcmp(extension, "jpg") == 0 || strcmp(extension, "JPG") == 0 || strcmp(extension, "jpeg") == 0 || strcmp(extension, "JPEG") == 0)

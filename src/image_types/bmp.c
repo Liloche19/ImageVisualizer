@@ -59,5 +59,6 @@ void open_bmp(char *filename, Image *settings)
     fclose(file);
     settings->actual_frame = 0;
     settings->nb_frames = 1;
+    settings->type = BMP;
     return;
 }

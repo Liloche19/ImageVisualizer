@@ -41,5 +41,6 @@ void open_jpeg(char *filename, Image *settings)
     settings->pixels = buffer;
     settings->actual_frame = 0;
     settings->nb_frames = 1;
+    settings->type = JPEG;
     return;
 }

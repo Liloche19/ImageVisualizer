@@ -5,11 +5,12 @@ SRC_C	=	src/main.c\
 			src/display.c\
 			src/load_image.c\
 			src/resize_image.c\
-			src/image_loaders/png.c\
-			src/image_loaders/gif.c\
-			src/image_loaders/bmp.c\
-			src/image_loaders/jpeg.c\
-			src/image_loaders/webp.c\
+			src/destroy_image.c\
+			src/image_types/png.c\
+			src/image_types/gif.c\
+			src/image_types/bmp.c\
+			src/image_types/jpeg.c\
+			src/image_types/webp.c\
 
 SRC_CU	=	src/init_gpu.cu\
 			src/resize_cuda.cu\

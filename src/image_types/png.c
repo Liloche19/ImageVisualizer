@@ -62,5 +62,6 @@ void open_png(char *filename, Image *settings)
     free(rows);
     settings->actual_frame = 0;
     settings->nb_frames = 1;
+    settings->type = PNG;
     return;
 }

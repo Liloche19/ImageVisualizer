@@ -28,7 +28,7 @@ __device__ rgb_t avg_rgb_cuda(unsigned char *img, float ratio_x, float ratio_y, 
 
 __device__ void apply_color_at_coord_on_buffer_cuda(Screen *screen, int x, int y, rgb_t color)
 {
-    char pixel[] = "\033[48;2;000;000;000m ";
+    char pixel[] = PIXEL_TEMPLATE;
     int start_index = 21 * x + (sizeof(RESET) + 1 + 21 * screen->cols) * y;
 
     pixel[7] = (color.rgb[0] / 100) + 48;

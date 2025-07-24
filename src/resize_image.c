@@ -83,14 +83,13 @@ char *resize_image(Image *image, Screen *screen)
     float img_ratio = 0;
     float ratio_x = 0.0;
     float ratio_y = 0.0;
-    char pixel[] = "\033[48;2;000;000;000m ";
 
     img_ratio = (float) image->width / image->height;
     if (img_ratio > ((float) screen->cols / screen->rows) / screen->char_ratio)
         screen->rows = screen->cols / (img_ratio * screen->char_ratio);
     else
         screen->cols = screen->rows * img_ratio * screen->char_ratio;
-    screen->print_buffer = malloc(sizeof(char) * (sizeof(pixel) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows));
+    screen->print_buffer = malloc(sizeof(char) * (sizeof(PIXEL_TEMPLATE) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows));
     if (screen->print_buffer == NULL) {
         fprintf(stderr, "Malloc failed!\n");
         exit(1);

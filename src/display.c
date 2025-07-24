@@ -13,7 +13,7 @@ long long get_time_ms(void)
 
 void apply_color_at_coord_on_buffer(Screen *screen, int x, int y, rgb_t color)
 {
-    char pixel[] = "\033[48;2;000;000;000m ";
+    char pixel[] = PIXEL_TEMPLATE;
     int start_index = sizeof(pixel) * x + (sizeof(RESET) + 1 + sizeof(pixel) * screen->cols) * y;
 
     pixel[7] = (color.rgb[0] / 100) + 48;
@@ -38,20 +38,19 @@ void apply_color_at_coord_on_buffer(Screen *screen, int x, int y, rgb_t color)
 
 void display_image(Image *image, Screen *screen)
 {
-    char pixel[] = "\033[48;2;000;000;000m ";
     int size = 0;
     long long last_frame_time = get_time_ms();
     long long actual_frame_time = 0;
     long diff_time = 0;
 
     while (image->actual_frame < image->nb_frames) {
-        if (image->gif != NULL)
+        if (image->type == GIF)
             get_pixels_from_frame_gif(image, image->actual_frame);
-        if (image->use_webp)
+        if (image->type == WEBP)
             get_pixels_from_next_frame_webp(image);
         get_screen_informations(screen);
         screen->print_buffer = resize_image(image, screen);
-        size = (sizeof(pixel) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows);
+        size = (sizeof(PIXEL_TEMPLATE) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows);
         actual_frame_time = get_time_ms();
         if (actual_frame_time - last_frame_time + image->ms_to_wait > 0)
             usleep((actual_frame_time - last_frame_time + image->ms_to_wait) * 1000);

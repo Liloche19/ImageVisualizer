@@ -69,7 +69,6 @@ void open_webp(char *filename, Image *settings)
     size_t file_size = 0;
     WebPData webp_raw_data;
 
-    settings->use_webp = true;
     if (file == NULL) {
         fprintf(stderr, "Error opening image file!\n");
         exit(1);
@@ -103,6 +102,14 @@ void open_webp(char *filename, Image *settings)
         fprintf(stderr, "Error while accessing webp frames!\n");
         exit(1);
     }
-    settings->actual_frame = 0;
+    settings->type = WEBP;
+    return;
+}
+
+void destroy_webp(Image *image)
+{
+    WebPDemuxReleaseIterator(&image->webp);
+    WebPDemuxDelete(image->demux);
+    free(image->webp_data);
     return;
 }

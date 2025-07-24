@@ -15,33 +15,42 @@
 
     #define RESET "\033[0m"
     #define CHAR ' '
+    #define PIXEL_TEMPLATE "\033[48;2;000;000;000m "
     #define DEFAULT_CHAR_RATIO 2.29
+
+typedef enum image_type_e {
+    BMP,
+    GIF,
+    JPEG,
+    PNG,
+    WEBP,
+} ImageType;
 
 typedef struct {
     unsigned char *pixels;
     unsigned char *previous_pixels;
     unsigned char *gpu_pixels;
-    char *filename;
+    ImageType type;
     int height;
     int width;
     int channels;
     int nb_frames;
     int actual_frame;
     int ms_to_wait;
+    /* fields for pecific types */
     GifFileType *gif;
     WebPIterator webp;
     WebPDemuxer *demux;
     unsigned char *webp_data;
-    bool use_webp;
 } Image;
 
 typedef struct {
+    char *print_buffer;
+    char *gpu_print_buffer;
     int cols;
     int rows;
-    char *print_buffer;
     int buffer_size;
     float char_ratio;
-    char *gpu_print_buffer;
     pthread_t gpu_loader;
 } Screen;
 
@@ -90,5 +99,11 @@ typedef struct {
     float ratio_x;
     float ratio_y;
 } ThreadData;
+
+// Destroy functions
+void destroy_image(Image *image);
+
+void destroy_gif(Image *image);
+void destroy_webp(Image *image);
 
 #endif //_VISUALIZER_H_
