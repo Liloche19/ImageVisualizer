@@ -18,6 +18,9 @@ extern "C" void init_gpu(pthread_t *gpu_loader)
 
     if (err != cudaSuccess || device == 0)
         return;
-    pthread_create(gpu_loader, NULL, &load_drivers, NULL);
+    if (pthread_create(gpu_loader, NULL, &load_drivers, NULL) != 0) {
+        fprintf(stderr, "Error while creating thread!\n");
+        exit(1);
+    }
     return;
 }

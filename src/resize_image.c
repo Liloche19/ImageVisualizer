@@ -56,8 +56,13 @@ char *resize_image_with_threads(Screen *screen, Image *image, float ratio_x, flo
         nb_thread -= 1;
     thread_ratio = (float) (screen->cols * screen->rows) / nb_thread;
     threads_id = malloc(sizeof(pthread_t) * nb_thread);
+    if (threads_id == NULL) {
+        fprintf(stderr, "Malloc failed!\n");
+        exit(1);
+    }
     threads_data = malloc(sizeof(ThreadData) * nb_thread);
-    if (threads_id == NULL || threads_data == NULL) {
+    if (threads_data == NULL) {
+        free(threads_id);
         fprintf(stderr, "Malloc failed!\n");
         exit(1);
     }
@@ -68,10 +73,16 @@ char *resize_image_with_threads(Screen *screen, Image *image, float ratio_x, flo
         threads_data[i].screen = screen;
         threads_data[i].ratio_x = ratio_x;
         threads_data[i].ratio_y = ratio_y;
-        pthread_create(&threads_id[i], NULL, resize_image_part, &threads_data[i]);
+        if (pthread_create(&threads_id[i], NULL, resize_image_part, &threads_data[i]) != 0) {
+            fprintf(stderr, "Error while creating thread!\n");
+            exit(1);
+        }
     }
     for (int i = 0; i < nb_thread; i++) {
-        pthread_join(threads_id[i], NULL);
+        if (pthread_join(threads_id[i], NULL)) {
+            fprintf(stderr, "Error while waiting thread!\n");
+            exit(1);
+        }
     }
     free(threads_id);
     free(threads_data);

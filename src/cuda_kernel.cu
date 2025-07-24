@@ -47,11 +47,6 @@ __device__ void apply_color_at_coord_on_buffer_cuda(Screen *screen, int x, int y
         for (int i = 0; i < (int) sizeof(RESET); i++)
             screen->gpu_print_buffer[start_index + sizeof(pixel) + i] = RESET[i];
         screen->gpu_print_buffer[start_index + sizeof(pixel) + sizeof(RESET)] = '\n';
-        if (start_index + sizeof(pixel) + sizeof(RESET) > screen->buffer_size) {
-                printf("Thread (%d,%d): Déborde du buffer à l'index %d (taille: %d)\n",
-                       x, y, start_index, screen->buffer_size);
-                return;
-            }
     }
     return;
 }

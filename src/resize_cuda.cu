@@ -18,7 +18,10 @@ extern "C" int resize_cuda(Screen *screen, Image *image, float ratio_x, float ra
     nb_blocks = (nb_pixels + CUDA_BLOCK_SIZE - 1) / CUDA_BLOCK_SIZE;
     screen->buffer_size = sizeof(char) * (sizeof(PIXEL_TEMPLATE) * screen->cols * screen->rows + (sizeof(RESET) + 1) * screen->rows);
     image_size = sizeof(unsigned char) * image->channels * image->height * image->width;
-    pthread_join(screen->gpu_loader, NULL);
+    if (pthread_join(screen->gpu_loader, NULL) != 0) {
+        fprintf(stderr, "Error while waiting thread!\n");
+        exit(1);
+    }
     if (cudaMalloc(&gpu_screen, sizeof(Screen)) != cudaSuccess || cudaMalloc(&gpu_image, sizeof(Image)) != cudaSuccess) {
         fprintf(stderr, "Error initialising structures!\n");
         exit(1);
@@ -33,6 +36,7 @@ extern "C" int resize_cuda(Screen *screen, Image *image, float ratio_x, float ra
     }
     if (cudaMemcpy(gpu_screen, screen, sizeof(Screen), cudaMemcpyHostToDevice) != cudaSuccess || cudaMemcpy(gpu_image, image, sizeof(Image), cudaMemcpyHostToDevice) != cudaSuccess) {
         fprintf(stderr, "Error copying data to GPU!\n");
+        exit(1);
     }
     resize_image_cuda<<<nb_blocks, CUDA_BLOCK_SIZE>>>(gpu_screen, gpu_image, ratio_x, ratio_y);
     if ((err = cudaDeviceSynchronize()) != cudaSuccess) {

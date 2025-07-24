@@ -34,4 +34,5 @@ void load_image(char *filename, Image *settings)
         return open_bmp(filename, settings);
     fprintf(stderr, "Uknown format detected!\n");
     exit(1);
+    return;
 }
