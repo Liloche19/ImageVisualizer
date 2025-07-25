@@ -32,6 +32,8 @@ void load_image(char *filename, Image *settings)
         return open_webp(filename, settings);
     if (strcmp(extension, "bmp") == 0 || strcmp(extension, "BMP") == 0)
         return open_bmp(filename, settings);
+    if (strcmp(extension, "CRW") == 0 || strcmp(extension, "crw") == 0 || strcmp(extension, "CR2") == 0 || strcmp(extension, "cr2") == 0 || strcmp(extension, "DNG") == 0 || strcmp(extension, "dng") == 0 || strcmp(extension, "NEF") == 0 || strcmp(extension, "nef") == 0 || strcmp(extension, "RAF") == 0 || strcmp(extension, "raf") == 0)
+        return open_raw(filename, settings);
     fprintf(stderr, "Unknown image format!\n");
     exit(1);
     return;

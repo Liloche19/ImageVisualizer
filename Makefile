@@ -6,6 +6,7 @@ SRC_C	=	src/main.c\
 			src/load_image.c\
 			src/resize_image.c\
 			src/destroy_image.c\
+			src/image_types/raw.c\
 			src/image_types/png.c\
 			src/image_types/gif.c\
 			src/image_types/bmp.c\
@@ -22,7 +23,7 @@ OBJ_CU	=	$(SRC_CU:.cu=.o)
 # Compilation parameters
 GPU_COMPILER	=	nvcc
 C_COMPILER	=	gcc
-LIBS	=	-lm -lpthread -lpng -ljpeg -lgif -lwebp -lwebpdemux
+LIBS	=	-lm -lpthread -lpng -ljpeg -lgif -lwebp -lwebpdemux -lraw
 GPU_COMPILER_FLAGS	=	-DUSE_CUDA -O2 -Wno-deprecated-gpu-targets -g -Xcompiler -fPIC $(LIBS)
 C_COMPILER_FLAGS	=	-O2 -Wall -Wextra -W -g $(LIBS)
 MAKEFLAGS	=	-j$(shell nproc) --silent --no-print-directory
