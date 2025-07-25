@@ -5,8 +5,6 @@ void get_pixels_from_frame_gif(Image *settings, int frame_to_load)
 {
     int idx = 0;
     int error = 0;
-    int transparent_index = 0;
-    int has_transparency = 0;
     int disposal_minus_one = 0;
     int local_idx = 0;
     SavedImage *frame = NULL;

@@ -4,7 +4,13 @@ void get_screen_informations(Screen *settings)
 {
     struct winsize win;
 
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &win);
+    if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &win) == -1) {
+        settings->cols = DEFAULT_NB_COLS;
+        settings->rows = DEFAULT_NB_ROWS;
+        settings->char_ratio = DEFAULT_CHAR_RATIO;
+        settings->print_buffer = NULL;
+        return;
+    }
     settings->cols = win.ws_col;
     settings->rows = win.ws_row;
     if (win.ws_xpixel != 0 && win.ws_ypixel != 0)

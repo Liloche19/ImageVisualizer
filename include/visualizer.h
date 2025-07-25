@@ -17,6 +17,8 @@
     #define CHAR ' '
     #define PIXEL_TEMPLATE "\033[48;2;000;000;000m "
     #define DEFAULT_CHAR_RATIO 2.29
+    #define DEFAULT_NB_COLS 180
+    #define DEFAULT_NB_ROWS 56
 
 typedef enum image_type_e {
     BMP,

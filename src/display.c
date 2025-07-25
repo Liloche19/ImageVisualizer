@@ -41,7 +41,6 @@ void display_image(Image *image, Screen *screen)
     int size = 0;
     long long last_frame_time = get_time_ms();
     long long actual_frame_time = 0;
-    long diff_time = 0;
 
     while (image->actual_frame < image->nb_frames) {
         if (image->type == GIF)
