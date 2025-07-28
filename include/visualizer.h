@@ -29,6 +29,7 @@ typedef enum image_type_e {
     WEBP,
     RAW,
     FITS,
+    TIF,
 } ImageType;
 
 typedef struct {
@@ -81,10 +82,10 @@ void open_webp(char *filename, Image *settings);
 void open_bmp(char *filename, Image *settings);
 void open_raw(char *filename, Image *settings);
 void open_fits(char *filename, Image *settings);
+void open_tiff(char *filename, Image *settings);
 
 void get_pixels_from_frame_gif(Image *settings, int frame_to_load);
 void get_pixels_from_next_frame_webp(Image *settings);
-
 
 typedef struct {
     int offset_left;

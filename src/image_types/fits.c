@@ -113,6 +113,7 @@ void open_fits(char *filename, Image *settings)
     settings->type = FITS;
     settings->actual_frame = 0;
     settings->nb_frames = 1;
+    settings->ms_to_wait = 0;
     settings->channels = 3;
     return;
 }

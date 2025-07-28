@@ -36,6 +36,8 @@ void load_image(char *filename, Image *settings)
         return open_raw(filename, settings);
     if (strcmp(extension, "fit") == 0 || strcmp(extension, "FIT") == 0 || strcmp(extension, "fits") == 0 || strcmp(extension, "FITS") == 0 || strcmp(extension, "fts") == 0 || strcmp(extension, "FTS") == 0)
         return open_fits(filename, settings);
+    if (strcmp(extension, "tiff") == 0 || strcmp(extension, "TIFF") == 0 || strcmp(extension, "tif") == 0 || strcmp(extension, "TIF") == 0)
+        return open_tiff(filename, settings);
     fprintf(stderr, "Unknown image format!\n");
     exit(1);
     return;
