@@ -30,8 +30,8 @@ void open_raw(char *filename, Image *settings)
     memcpy(settings->pixels, img->data, sizeof(unsigned char) * settings->height * settings->width * settings->channels);
     libraw_dcraw_clear_mem(img);
     libraw_close(processor);
-    printf("%d %d %d\n", settings->height, settings->width, settings->channels);
     settings->actual_frame = 0;
     settings->nb_frames = 1;
+    settings->type = RAW;
     return;
 }

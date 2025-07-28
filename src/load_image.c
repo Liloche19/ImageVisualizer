@@ -34,6 +34,8 @@ void load_image(char *filename, Image *settings)
         return open_bmp(filename, settings);
     if (strcmp(extension, "CRW") == 0 || strcmp(extension, "crw") == 0 || strcmp(extension, "CR2") == 0 || strcmp(extension, "cr2") == 0 || strcmp(extension, "DNG") == 0 || strcmp(extension, "dng") == 0 || strcmp(extension, "NEF") == 0 || strcmp(extension, "nef") == 0 || strcmp(extension, "RAF") == 0 || strcmp(extension, "raf") == 0)
         return open_raw(filename, settings);
+    if (strcmp(extension, "fit") == 0 || strcmp(extension, "FIT") == 0 || strcmp(extension, "fits") == 0 || strcmp(extension, "FITS") == 0 || strcmp(extension, "fts") == 0 || strcmp(extension, "FTS") == 0)
+        return open_fits(filename, settings);
     fprintf(stderr, "Unknown image format!\n");
     exit(1);
     return;
